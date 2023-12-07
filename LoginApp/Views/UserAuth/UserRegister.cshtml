@@ -1,0 +1,68 @@
+﻿@model LoginApp.Models.UserModel;
+
+<style>
+    .error_message {
+        color: red;
+    }
+
+</style>
+
+<h1>Register Here</h1>
+
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@using (Html.BeginForm("UserRegister", "UserAuth", FormMethod.Post ))
+{
+    @Html.AntiForgeryToken()
+
+    <label>Full Name</label>
+    @Html.TextBoxFor(m => m.Name)
+
+    <label>Email</label>
+    @Html.TextBoxFor(m => m.Email)
+
+    <label>Password</label>
+    @Html.PasswordFor(m => m.Password )
+
+    <button type="submit">Register</button>
+    
+    <br/>
+    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "error_message" })
+    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "error_message" })
+
+}
+
+<br/>
+<br />
+
+<h1>Login Here</h1>
+@using (Html.BeginForm("UserLogin", "UserAuth", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <label>Email</label>
+    @Html.TextBoxFor(m => m.Email)
+
+    <label>Password</label>
+    @Html.PasswordFor(m => m.Password )
+
+    <button type="submit">Login</button>
+
+    <br />
+    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "error_message" })
+    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "error_message" })
+
+}
