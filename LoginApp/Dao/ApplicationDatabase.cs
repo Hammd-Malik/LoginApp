@@ -96,5 +96,52 @@ namespace LoginApp.Dao
             return UserData;
         
     }
+
+        public List<DevModel> GetDevList()
+        {
+            List<DevModel> DevData = new List<DevModel>();
+            var connectionString = Environment.GetEnvironmentVariable("OracleDBConnection");
+            using (OracleConnection conn = new OracleConnection(connectionString))
+            {
+                OracleCommand cmd = new OracleCommand("SELECT * FROM PRAC_LA_DEV", conn)
+                {
+                    CommandType = CommandType.Text,
+                    BindByName = true
+                };
+                try
+                {
+                    conn.Open();
+                    using (OracleDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            DevModel dev = new DevModel
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                            };
+
+                            DevData.Add(dev);
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Dispose();
+                        conn.Close();
+                    }
+                    cmd.Dispose();
+                }
+            }
+            return DevData;
+        }
     }
 }

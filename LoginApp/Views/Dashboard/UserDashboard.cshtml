@@ -1,6 +1,68 @@
 ﻿@inject IHttpContextAccessor context;
-
+@model List<DevModel>
 @{
 }
 <h1>Welcome To @context.HttpContext.Session.GetString("UserEmail") UserDashboard</h1>
 <a href="@Url.Action("UserLogout","UserAuth")" class="btn btn-danger">Logout</a>
+
+
+
+<div class="container mt-4">
+    <button class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Assign New Task</button>
+    <table class="table table-hover table-bordered mt-4">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Task</td>
+                <td>Assigned To</td>
+                <td>Added By</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>#1</td>
+                <td>Add Yango Integration</td>
+                <td>Hammad.Malik</td>
+                <td>Hammad Malik</td>
+                <td>
+                    <button class="btn btn-outline-danger">Delete</button>
+                    <button class="btn btn-outline-success">Edit</button>
+                    <button class="btn btn-outline-dark">Read Details</button>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">Assign New Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <label>Task Title</label>
+               <input class="form-control"/>
+                <label>Task Assiged To</label>
+               <select class="form-control">
+                   <option selected disabled>Select Developer</option>
+                    @foreach (var dev in Model)
+                    {
+                        <option value="@dev.Id">@dev.Name</option>
+                    }
+                </select>
+               <label>Task Details</label>
+               <textarea row="3" class="form-control">Add Task Details</textarea>                
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary"  data-bs-dismiss="modal">Assign Task</button>
+            </div>
+        </div>
+    </div>
+</div>
+
