@@ -24,7 +24,7 @@ namespace LoginApp.Controllers
         [HttpGet]
         public ActionResult UserRegister()
         {
-            if(_context.HttpContext.Session.GetString("UserEmail") != null)
+            if(_context.HttpContext?.Session.GetString("UserEmail") != null)
             {
                 return RedirectToAction("UserDashboard", "Dashboard");
             }
@@ -48,7 +48,7 @@ namespace LoginApp.Controllers
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "Email Already Exist."+ dbUser.Count;
+                    ViewBag.ErrorMessage = "Email Already Exist.";
                 }
 
             }
@@ -68,6 +68,7 @@ namespace LoginApp.Controllers
                     if (checkPassword)
                     {
                         _context.HttpContext.Session.SetString("UserEmail", model.Email);
+                        _context.HttpContext.Session.SetString("Username", dbUser[0].Name);
                         ViewBag.SuccessMessage = "Login Successfull";
                         return RedirectToAction("UserDashboard", "Dashboard");
                     }

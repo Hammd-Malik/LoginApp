@@ -16,6 +16,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\hammad.malik\source\repos\LoginApp\LoginApp
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/hammad.malik/source/repos/LoginApp/LoginApp/Views/Dashboard/DetailsTask.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXERldGFpbHNUYXNrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/hammad.malik/source/repos/LoginApp/LoginApp/Views/Dashboard/UserDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFVzZXJEYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

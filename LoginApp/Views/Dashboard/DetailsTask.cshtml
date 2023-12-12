@@ -1,0 +1,10 @@
+﻿@model ViewModel
+
+<h1>Task Details</h1> 
+<br/>
+<h3>Task Title:@Model.TaskList[0]?.taskTitle</h3>
+<h3>Assigned To:@Model.TaskList[0]?.devName</h3>
+<h3>Assigned By:@Model.TaskList[0]?.userName</h3>
+<h3>Task Details:@Model.TaskList[0]?.createdAt</h3>
+<h3>Task Details</h3>
+<p>@Model.TaskList[0]?.taskDetails</p>

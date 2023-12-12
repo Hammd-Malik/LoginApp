@@ -1,10 +1,23 @@
 ﻿@inject IHttpContextAccessor context;
-@model List<DevModel>
-@{
-}
-<h1>Welcome To @context.HttpContext.Session.GetString("UserEmail") UserDashboard</h1>
+@model ViewModel
+
+
+<h1>Welcome To @context.HttpContext.Session.GetString("Username") UserDashboard</h1>
 <a href="@Url.Action("UserLogout","UserAuth")" class="btn btn-danger">Logout</a>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success mt-2">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger mt-2">
+        @TempData["ErrorMessage"]
+    </div>
+}
 
 
 <div class="container mt-4">
@@ -16,22 +29,34 @@
                 <td>Task</td>
                 <td>Assigned To</td>
                 <td>Added By</td>
+                <td>Created At</td>
                 <td>Action</td>
             </tr>
         </thead>
         <tbody>
+            @{ var rowNumber = 1; }
+            @foreach (var data in Model.TaskList)
+            {
             <tr>
-                <td>#1</td>
-                <td>Add Yango Integration</td>
-                <td>Hammad.Malik</td>
-                <td>Hammad Malik</td>
+                <td>#@rowNumber</td>
+                <td>@data.taskTitle</td>
+                <td>@data.devName</td>
+                <td>@data.userName</td>
+                <td>@data.createdAt</td>
                 <td>
-                    <button class="btn btn-outline-danger">Delete</button>
-                    <button class="btn btn-outline-success">Edit</button>
-                    <button class="btn btn-outline-dark">Read Details</button>
-                    
+                    <a href="@Url.Action("DeleteTask", "Dashboard", new {id = @data.id} )">
+                        <button class="btn btn-outline-danger">Delete</button>
+                    </a>
+
+                   @*  <button class="btn btn-outline-success" id="editTaskButton" data-bs-toggle="modal" href="#editButton" role="button" data-id="@data.id" data-title="@data.taskTitle" data-details="@data.taskDetails" data-devId="@data.devId" data-devName="@data.devName">Edit</button> *@
+
+                    <a href="@Url.Action("DetailsTask", "Dashboard", new {id = @data.id} )">
+                            <button class="btn btn-outline-dark">Read Details</button>
+                    </a
                 </td>
             </tr>
+            rowNumber++;    
+            }
         </tbody>
     </table>
 </div>
@@ -44,25 +69,66 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-               <label>Task Title</label>
-               <input class="form-control"/>
-                <label>Task Assiged To</label>
-               <select class="form-control">
-                   <option selected disabled>Select Developer</option>
-                    @foreach (var dev in Model)
-                    {
-                        <option value="@dev.Id">@dev.Name</option>
-                    }
-                </select>
-               <label>Task Details</label>
-               <textarea row="3" class="form-control">Add Task Details</textarea>                
+                @using(Html.BeginForm("UserAddTask", "Dashboard", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button class="btn btn-primary"  data-bs-dismiss="modal">Assign Task</button>
+
+                    <label>Task Title</label>
+                    @Html.TextBoxFor(m => m.TaskModel.TaskTitle , new { @class = "form-control" })
+
+                   <label>Task Assigned To</label>
+                    @Html.DropDownListFor(m => m.TaskModel.AssignedTo , new SelectList(Model.DevList , "Id", "Name"), "Select Developer" , new { @class = "form-control" })
+
+                    <label>Task Details</label>
+                    @Html.TextAreaFor(m => m.TaskModel.TaskDetails , new { @class = "form-control", rows = 4 })
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Assign Task</button>
+                    </div>
+                }
+
             </div>
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="editButton" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editButtonLabel">Edit Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using(Html.BeginForm("EditTask", "Dashboard", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.HiddenFor(m => m.TaskModel.Id , new{ @class ="taskIdInput" })
+
+                    <label>Task Title</label>
+                    @Html.TextBoxFor(m => m.TaskModel.TaskTitle , new { @class = "form-control taskTitleInput" })
+
+                    <label>Task Assigned To</label>
+                    @Html.DropDownListFor(m => m.TaskModel.AssignedTo , new SelectList(Model.DevList , "Id", "Name"), "Select Developer" , new { @class = "form-control devId" })
+
+                    <label>Task Details</label>
+                    @Html.TextAreaFor(m => m.TaskModel.TaskDetails , new { @class = "form-control taskDetailsInput", rows = 4 })
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Assign Task</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
