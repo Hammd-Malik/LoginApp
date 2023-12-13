@@ -152,7 +152,7 @@ namespace LoginApp.Dao
             var connectionString = Environment.GetEnvironmentVariable("OracleDBConnection");
             using (OracleConnection conn = new OracleConnection(connectionString))
             {
-                OracleCommand cmd = new OracleCommand("SELECT * FROM PRAC_LA_TASK", conn)
+                OracleCommand cmd = new OracleCommand("SELECT * FROM PRAC_LA_TASK ORDER BY ID", conn)
                 {
                     CommandType = CommandType.Text,
                     BindByName = true
@@ -172,6 +172,7 @@ namespace LoginApp.Dao
                                 AssignedBy = Convert.ToInt32(reader["Assigned_By"]),
                                 TaskDetails = reader.GetString(reader.GetOrdinal("Details")),                                
                                 AssignedDate = reader.GetDateTime("Created_At"),
+                                Status = Convert.ToInt32(reader["status"]),
 
                             };
 
@@ -480,8 +481,43 @@ namespace LoginApp.Dao
                 return TaskData;
             }
         }
+
+        public void TaskStatusUpdate(int id)
+        {
+            var connectionString = Environment.GetEnvironmentVariable("OracleDBConnection");
+            using (OracleConnection conn = new OracleConnection(connectionString))
+            {
+                OracleCommand cmd = new OracleCommand("UPDATE PRAC_LA_TASK SET STATUS = 1 WHERE ID =: id", conn)
+                {
+                    CommandType = CommandType.Text,
+                    BindByName = true
+                };
+                try
+                {
+                    cmd.Parameters.Add("id", OracleDbType.Varchar2, ParameterDirection.Input).Value =id;
+
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Dispose();
+                        conn.Close();
+                    }
+                    cmd.Dispose();
+                }
+            }
+        }
     }
 
-    }
+}
 
 

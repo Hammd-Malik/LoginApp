@@ -25,5 +25,7 @@ namespace LoginApp.Interfaces
         public void DeleteTask(int id);
 
         public List<TaskModel> TaskDetailsById(int id);
+
+        public void TaskStatusUpdate(int id);
     }
 }

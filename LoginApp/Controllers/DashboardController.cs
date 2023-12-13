@@ -2,6 +2,7 @@
 using LoginApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
+using System.Security.Policy;
 
 namespace LoginApp.Controllers
 {
@@ -38,6 +39,7 @@ namespace LoginApp.Controllers
                     data.taskTitle = Task.TaskTitle;
                     data.taskDetails = Task.TaskDetails;
                     data.createdAt = Task.AssignedDate;
+                    data.status = Task.Status;
                     TaskData.Add(data);
                 }
 
@@ -107,8 +109,19 @@ namespace LoginApp.Controllers
                 return View(viewModel);
             }
             return RedirectToAction("UserRegister", "UserAuth");
-
                
+        }
+
+        public ActionResult TaskStatusUpdate(int id)
+        {
+            if (_context.HttpContext.Session.GetString("UserEmail") != null)
+            {
+                
+                _db.TaskStatusUpdate(id);
+                TempData["SuccessMessage"]  = "Task is Marked as Done";
+                return RedirectToAction("UserDashboard", "Dashboard");
+            }
+            return RedirectToAction("UserRegister", "UserAuth");
         }
 
 

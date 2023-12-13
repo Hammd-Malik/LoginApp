@@ -29,6 +29,7 @@
                 <td>Task</td>
                 <td>Assigned To</td>
                 <td>Added By</td>
+                <td>Status</td>
                 <td>Created At</td>
                 <td>Action</td>
             </tr>
@@ -42,7 +43,15 @@
                 <td>@data.taskTitle</td>
                 <td>@data.devName</td>
                 <td>@data.userName</td>
-                <td>@data.createdAt</td>
+                    <td> @if (@data.status == 1)
+                        {
+                            <span class="badge bg-success">Completed</span>
+                        }else
+                        {
+                            <span class="badge bg-primary">Pending</span>
+                        }
+                    </td>
+                    <td>@data.createdAt</td>
                 <td>
                     <a href="@Url.Action("DeleteTask", "Dashboard", new {id = @data.id} )">
                         <button class="btn btn-outline-danger">Delete</button>
@@ -52,7 +61,14 @@
 
                     <a href="@Url.Action("DetailsTask", "Dashboard", new {id = @data.id} )">
                             <button class="btn btn-outline-dark">Read Details</button>
-                    </a
+                    </a>
+                        @if(@data.status == 0)
+                        {
+                            <a href="@Url.Action("TaskStatusUpdate", "Dashboard", new {id = @data.id} )">
+                                <button class="btn btn-outline-success">Mark Done</button>
+                            </a>
+                        }
+                        
                 </td>
             </tr>
             rowNumber++;    

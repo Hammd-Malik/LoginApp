@@ -1,7 +1,8 @@
 ﻿using LoginApp.Interfaces;
 using LoginApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Web;
+using Microsoft.AspNetCore.Http;
+using System.Reflection;
 
 namespace LoginApp.Controllers
 {
@@ -24,9 +25,14 @@ namespace LoginApp.Controllers
         [HttpGet]
         public ActionResult UserRegister()
         {
-            if(_context.HttpContext?.Session.GetString("UserEmail") != null)
+            string userEmail = HttpContext.Request.Cookies["UserInfo"];
+            if (!string.IsNullOrEmpty(userEmail))
             {
+                var dbUser = _db.CheckEmail(userEmail);
+                _context.HttpContext.Session.SetString("UserEmail", dbUser.FirstOrDefault().Email);
+                _context.HttpContext.Session.SetString("Username", dbUser.FirstOrDefault().Name);
                 return RedirectToAction("UserDashboard", "Dashboard");
+
             }
             return View();
         }
@@ -59,7 +65,8 @@ namespace LoginApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult UserLogin(UserModel model)
         {
-            if(model.Email != "" || model.Password != "")
+
+            if (model.Email != "" || model.Password != "")
             {
                 var dbUser = _db.CheckEmail(model.Email);
                 if (dbUser != null && dbUser.Any())
@@ -68,8 +75,16 @@ namespace LoginApp.Controllers
                     if (checkPassword)
                     {
                         _context.HttpContext.Session.SetString("UserEmail", model.Email);
-                        _context.HttpContext.Session.SetString("Username", dbUser[0].Name);
-                        ViewBag.SuccessMessage = "Login Successfull";
+                        _context.HttpContext.Session.SetString("Username", dbUser[0]?.Name);
+                        if (model.RememberMe)
+                        {
+                            CookieOptions options = new CookieOptions
+                            {
+                                Expires = DateTime.Now.AddDays(1)
+                            };
+                            Response.Cookies.Append("UserInfo",model.Email, options);
+                        }
+                        
                         return RedirectToAction("UserDashboard", "Dashboard");
                     }
                     else
@@ -94,6 +109,7 @@ namespace LoginApp.Controllers
 
         public ActionResult UserLogout()
         {
+            Response.Cookies.Delete("UserInfo");
             _context.HttpContext.Session.Remove("UserEmail");
             ViewBag.SuccessMessage = "You have been logout Successfully";
             return RedirectToAction("UserRegister", "UserAuth");

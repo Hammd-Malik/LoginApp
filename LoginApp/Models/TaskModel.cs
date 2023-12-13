@@ -14,6 +14,8 @@ namespace LoginApp.Models
 
         public string? TaskDetails { get; set; }
 
+        public int Status { get; set; }
+
         public DateTime AssignedDate { get; set; }
     }
 }

@@ -59,6 +59,10 @@
     <label>Password</label>
     @Html.PasswordFor(m => m.Password )
 
+    <label>
+        @Html.CheckBoxFor(m => m.RememberMe) Remember Me
+    </label>
+
     <button type="submit">Login</button>
 
     <br />
