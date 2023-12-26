@@ -1,1 +1,7 @@
-# Basic Login App for Authentication and maintaining Session
+# LoginApp 
+- Authentication
+- Crud Operations
+- Session
+- Cookies
+- Database Connectivity (Oracle)
+  
